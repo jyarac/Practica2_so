@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <time.h>
+#include <arpa/inet.h>
 // Definición de la estructura de datos para almacenar la información de tiempos de viaje
 
 //create a function called ingresar origen that receives a pointer to a integer and wait for input,verifies if the input is between 1 and 1160, the input is saved on the integer else it prints an error message
@@ -15,12 +17,26 @@
 #define BUFFER_SIZE 200
 
 
+void guardarRegistro(char *registro, char *nombreArchivo) {
+    FILE *archivo;
+
+    // Abrir el archivo en modo adjunto (append)
+    if ((archivo = fopen(nombreArchivo, "a")) != NULL) {
+        // Escribir el registro en el archivo
+        fprintf(archivo, "%s\n", registro);
+
+        // Cerrar el archivo
+        fclose(archivo);
+        printf("El registro se ha guardado correctamente.\n");
+    } else {
+        printf("No se pudo abrir el archivo para guardar el registro.\n");
+    }
+}
+
+
 int main() {
     
-    //create a if statement that verifies if the file hash.bin exist if it does, it calls hashDocument function with parameters datos.csv, hash.bin and 1160, else it calls hashDocument function with parameters datos.csv, hash.bin and 1160
-    hashDocument();
-    //print document hashed
-    printf("Document hashed\n");
+
     //creating a socket and initializing it|
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1) {
@@ -46,29 +62,29 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    printf("Server listening on port %d\n", PORT);
 
     // Accept an incoming connection
     int clientSocket;
     struct sockaddr_in clientAddress;
     int clientAddressSize = sizeof(clientAddress);
+    //stay accepting connections
+
     while (1==1){
     if ((clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t *)&clientAddressSize)) < 0) {
         perror("Accepting connection failed");
         exit(EXIT_FAILURE);
     }
-
-
     // Receive data from client
     char buffer[BUFFER_SIZE];
-    //print buffer
+    //obtaining client ip
+    char clientIP[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(clientAddress.sin_addr), clientIP, INET_ADDRSTRLEN);
+
     ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead < 0) {
         perror("Receiving data failed");
         exit(EXIT_FAILURE);
     }
-
-    printf("Received data from client: %s\n", buffer);
     int numbers[3];
     char *token = strtok(buffer, " ");
     int i = 0;
@@ -80,9 +96,24 @@ int main() {
     //print numbers
     search(numbers[0], numbers[1], numbers[2]);
     //search for the data in the hash table
-    //if the data is found send the data to the client
-    //else send a message to the client that the data was not found
-    //send data to client
+    //saving log history
+        FILE *file;
+    char *file_name = "log.txt";
+
+    // Abrir el archivo
+    char registro[100];
+    char nombreArchivo[] = "log.txt";
+
+    // Obtener la fecha y hora actual
+    time_t t = time(NULL);
+    struct tm *now = localtime(&t);
+
+    // Formatear la fecha y hora actual
+    strftime(registro, sizeof(registro), "[%Y%m%dT%H%M%S]", now);
+    
+    // Guardar el registro en el archivo
+    guardarRegistro(registro, nombreArchivo);
+
 
       }  
     close(clientSocket);
