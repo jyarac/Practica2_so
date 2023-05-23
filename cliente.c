@@ -5,7 +5,50 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+#define SERVER_IP "127.0.0.1"
+#define PORT 3535
+#define BUFFER_SIZE 200
+void peticion_servidor(int clientSocket) {
+    // Set up server address
+    struct sockaddr_in serverAddress;
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_port = htons(PORT);
+    printf("Conectando al servidor %s:%d\n", SERVER_IP, PORT);
+    // Convert IP address from string to binary form
+    if (inet_pton(AF_INET, SERVER_IP, &(serverAddress.sin_addr)) <= 0) {
+        perror("Dirección inválida/No compatible");
+        exit(EXIT_FAILURE);
+    }
+
+    // Connect to the server
+    if (connect(clientSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0) {
+        perror("Error al conectar");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Conectado al servidor\n");
+
+    // Send data to server
+    char message[BUFFER_SIZE] = "Hola, servidor!";
+    ssize_t bytesSent = send(clientSocket, message, strlen(message), 0);
+    if (bytesSent < 0) {
+        perror("Error al enviar los datos");
+        exit(EXIT_FAILURE);
+    }
+
+    // Close the socket
+    close(clientSocket);
+}
 void ingresar_origen(int* sourceid) {
+    int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (clientSocket == -1) {
+        perror("Error al crear el socket");
+        exit(EXIT_FAILURE);
+    }
+
     int input;
     printf("Ingrese ID del origen:");
     scanf("%d", &input);
@@ -43,6 +86,15 @@ int main() {
     int sourceid;
     int dstid;
     int hod;
+    // Create socket
+    int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (clientSocket == -1) {
+        perror("Error al crear el socket");
+        exit(EXIT_FAILURE);
+    }
+
+    // Llamar a la función para establecer la conexión con el servidor
+
 
     while (option != 5) {
         printf("Bienvenido\n");
@@ -66,8 +118,8 @@ int main() {
                 ingresar_hora(&hod);
                 break;
             case 4:
-            //start socket and send sourceid, dstid and hod
-                       
+                peticion_servidor(clientSocket);
+                break;
             case 5:
 
                 printf("Saliendo del programa...\n");
