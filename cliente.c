@@ -11,7 +11,7 @@
 #define SERVER_IP "127.0.0.1"
 #define PORT 3535
 #define BUFFER_SIZE 200
-void peticion_servidor(int dstid, int sourceid, int hod) {
+void peticion_servidor( int sourceid, int dstid, int hod) {
     // Set up server address
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (clientSocket == -1) {
@@ -38,7 +38,8 @@ void peticion_servidor(int dstid, int sourceid, int hod) {
 
     // Send dstid, sourceid and hod to server
     char message[BUFFER_SIZE];
-    sprintf(message, "%d %d %d", dstid, sourceid, hod);
+    sprintf(message, "%d %d %d",sourceid, dstid, hod);
+
     ssize_t bytesSent = send(clientSocket, message, strlen(message), 0);
     if (bytesSent < 0) {
         perror("Error al enviar los datos");
@@ -119,7 +120,7 @@ int main() {
                 ingresar_hora(&hod);
                 break;
             case 4:
-                peticion_servidor(dstid, hod, sourceid);
+                peticion_servidor(sourceid, dstid, hod);
                 break;
             case 5:
 

@@ -58,10 +58,10 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    printf("Client connected\n");
 
     // Receive data from client
     char buffer[BUFFER_SIZE];
+    //print buffer
     ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead < 0) {
         perror("Receiving data failed");
