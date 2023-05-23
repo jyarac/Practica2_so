@@ -11,8 +11,14 @@
 #define SERVER_IP "127.0.0.1"
 #define PORT 3535
 #define BUFFER_SIZE 200
-void peticion_servidor(int clientSocket, int dstid, int sourceid, int hod) {
+void peticion_servidor(int dstid, int sourceid, int hod) {
     // Set up server address
+    int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (clientSocket == -1) {
+        perror("Error al crear el socket");
+        exit(EXIT_FAILURE);
+    }
+
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(PORT);
@@ -39,15 +45,10 @@ void peticion_servidor(int clientSocket, int dstid, int sourceid, int hod) {
         exit(EXIT_FAILURE);
     }
 
-
-    
+    // Close the socket
+    close(clientSocket);
 }
 void ingresar_origen(int* sourceid) {
-    int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (clientSocket == -1) {
-        perror("Error al crear el socket");
-        exit(EXIT_FAILURE);
-    }
 
     int input;
     printf("Ingrese ID del origen:");
@@ -118,7 +119,7 @@ int main() {
                 ingresar_hora(&hod);
                 break;
             case 4:
-                peticion_servidor(clientSocket, dstid, hod, sourceid);
+                peticion_servidor(dstid, hod, sourceid);
                 break;
             case 5:
 

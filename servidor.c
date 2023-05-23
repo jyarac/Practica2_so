@@ -52,6 +52,7 @@ int main() {
     int clientSocket;
     struct sockaddr_in clientAddress;
     int clientAddressSize = sizeof(clientAddress);
+    while (1==1){
     if ((clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t *)&clientAddressSize)) < 0) {
         perror("Accepting connection failed");
         exit(EXIT_FAILURE);
@@ -83,6 +84,7 @@ int main() {
     //else send a message to the client that the data was not found
     //send data to client
 
+      }  
     close(clientSocket);
     close(serverSocket);
 
