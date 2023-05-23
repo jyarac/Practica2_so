@@ -11,12 +11,11 @@
 #define SERVER_IP "127.0.0.1"
 #define PORT 3535
 #define BUFFER_SIZE 200
-void peticion_servidor(int clientSocket) {
+void peticion_servidor(int clientSocket, int dstid, int sourceid, int hod) {
     // Set up server address
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(PORT);
-    printf("Conectando al servidor %s:%d\n", SERVER_IP, PORT);
     // Convert IP address from string to binary form
     if (inet_pton(AF_INET, SERVER_IP, &(serverAddress.sin_addr)) <= 0) {
         perror("Dirección inválida/No compatible");
@@ -31,16 +30,17 @@ void peticion_servidor(int clientSocket) {
 
     printf("Conectado al servidor\n");
 
-    // Send data to server
-    char message[BUFFER_SIZE] = "Hola, servidor!";
+    // Send dstid, sourceid and hod to server
+    char message[BUFFER_SIZE];
+    sprintf(message, "%d %d %d", dstid, sourceid, hod);
     ssize_t bytesSent = send(clientSocket, message, strlen(message), 0);
     if (bytesSent < 0) {
         perror("Error al enviar los datos");
         exit(EXIT_FAILURE);
     }
 
-    // Close the socket
-    close(clientSocket);
+
+    
 }
 void ingresar_origen(int* sourceid) {
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -118,7 +118,7 @@ int main() {
                 ingresar_hora(&hod);
                 break;
             case 4:
-                peticion_servidor(clientSocket);
+                peticion_servidor(clientSocket, dstid, hod, sourceid);
                 break;
             case 5:
 

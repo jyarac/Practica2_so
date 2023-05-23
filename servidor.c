@@ -21,6 +21,7 @@ int main() {
     hashDocument();
     //print document hashed
     printf("Document hashed\n");
+    //creating a socket and initializing it|
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1) {
         perror("Failed to create socket");
@@ -67,8 +68,21 @@ int main() {
     }
 
     printf("Received data from client: %s\n", buffer);
+    int numbers[3];
+    char *token = strtok(buffer, " ");
+    int i = 0;
+    while (token != NULL && i < 3) {
+        numbers[i] = atoi(token);
+        i++;
+        token = strtok(NULL, " ");
+    }
+    //print numbers
+    search(numbers[0], numbers[1], numbers[2]);
+    //search for the data in the hash table
+    //if the data is found send the data to the client
+    //else send a message to the client that the data was not found
+    //send data to client
 
-    // Close the sockets
     close(clientSocket);
     close(serverSocket);
 
