@@ -27,7 +27,7 @@ void guardarRegistro(char *registro, char *nombreArchivo) {
 
         // Cerrar el archivo
         fclose(archivo);
-        printf("El registro se ha guardado correctamente.\n");
+        printf("Consulta satisfactoria.\n");
     } else {
         printf("No se pudo abrir el archivo para guardar el registro.\n");
     }
