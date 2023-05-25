@@ -80,11 +80,26 @@ int main() {
     char clientIP[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(clientAddress.sin_addr), clientIP, INET_ADDRSTRLEN);
 
+
     ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead < 0) {
         perror("Receiving data failed");
         exit(EXIT_FAILURE);
     }
+
+        //formatting the log
+    char registro[100];
+    char nombreArchivo[] = "log.txt";
+    time_t t = time(NULL);
+    struct tm *now = localtime(&t);
+
+    strftime(registro, sizeof(registro), "[%Y%m%dT%H%M%S]", now);
+    strcat(registro, "Cliente [");
+    strcat(registro, clientIP);
+    strcat(registro, "] [");
+    strcat(registro, buffer);
+    strcat(registro, "]");
+    
     int numbers[3];
     char *token = strtok(buffer, " ");
     int i = 0;
@@ -101,16 +116,11 @@ int main() {
     char *file_name = "log.txt";
 
     // Abrir el archivo
-    char registro[100];
-    char nombreArchivo[] = "log.txt";
 
     // Obtener la fecha y hora actual
-    time_t t = time(NULL);
-    struct tm *now = localtime(&t);
 
     // Formatear la fecha y hora actual
-    strftime(registro, sizeof(registro), "[%Y%m%dT%H%M%S]", now);
-    
+
     // Guardar el registro en el archivo
     guardarRegistro(registro, nombreArchivo);
 
