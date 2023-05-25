@@ -83,7 +83,6 @@ Nodo* buscar_binario(FILE* binario, int sourceid, int dstid, int hod) {
         if (nodo->sourceid == sourceid && nodo->dstid == dstid && nodo->hod == hod) {
             gettimeofday(&fin, NULL); // Obtener el tiempo de fin de la búsqueda
             double tiempo_transcurrido = (fin.tv_sec - inicio.tv_sec) + (fin.tv_usec - inicio.tv_usec) / 1000000.0; // Calcular el tiempo transcurrido en segundos
-            printf("\nTiempo busar_binario transcurrido: %.6f segundos\n", tiempo_transcurrido);
             return nodo;
         }
     }
