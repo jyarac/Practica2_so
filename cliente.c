@@ -45,7 +45,16 @@ void peticion_servidor( int sourceid, int dstid, int hod) {
         perror("Error al enviar los datos");
         exit(EXIT_FAILURE);
     }
-
+    //receive and print data
+    char buffer[BUFFER_SIZE];
+    ssize_t bytesReceived = recv(clientSocket, buffer, BUFFER_SIZE, 0);
+    if (bytesReceived < 0) {
+        perror("Error al recibir los datos");
+        exit(EXIT_FAILURE);
+    }
+    buffer[bytesReceived] = '\0';
+    printf("Tiempo de viaje: %s\n", buffer);
+    
     // Close the socket
     close(clientSocket);
 }

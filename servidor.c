@@ -99,7 +99,7 @@ int main() {
     strcat(registro, "] [");
     strcat(registro, buffer);
     strcat(registro, "]");
-    
+
     int numbers[3];
     char *token = strtok(buffer, " ");
     int i = 0;
@@ -109,7 +109,12 @@ int main() {
         token = strtok(NULL, " ");
     }
     //print numbers
-    search(numbers[0], numbers[1], numbers[2]);
+    double travel_time = search(numbers[0], numbers[1], numbers[2]);
+    //send data to client
+    char response[BUFFER_SIZE];
+    sprintf(response, "%f", travel_time);
+    send(clientSocket, response, strlen(response), 0);
+    
     //search for the data in the hash table
     //saving log history
         FILE *file;

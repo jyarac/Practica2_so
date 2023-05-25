@@ -147,24 +147,15 @@ float search(int sourceid, int dstid, int hod) {
     Nodo* nodo = buscar_binario(binario, sourceid, dstid, hod);
     if (nodo == NULL) {
         printf("NA\n");
+        fclose(binario);
         
     } else {
+            fclose(binario);
         printf("Tiempo de viaje medio: %f\n", nodo->mean_travel_time);
+        return nodo->mean_travel_time;
     }
 
     // Cerrar el archivo
-    fclose(binario);
-
-    // Obtener el tiempo de fin
-    struct timeval fin;
-    gettimeofday(&fin, NULL);
-    double tiempo_fin = (double)fin.tv_sec + (double)fin.tv_usec / 1000000.0;
-
-    // Calcular el tiempo transcurrido en segundos
-    double tiempo_transcurrido = tiempo_fin - tiempo_inicio;
-
-    // Imprimir el tiempo transcurrido
-    printf("\nTiempo de search transcurrido: %f segundos\n", tiempo_transcurrido);
 
     return 0;
 }
