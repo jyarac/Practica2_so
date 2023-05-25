@@ -114,7 +114,7 @@ int main() {
     char response[BUFFER_SIZE];
     sprintf(response, "%f", travel_time);
     send(clientSocket, response, strlen(response), 0);
-    printf("Consulta enviada al cliente.");
+    printf("Consulta enviada al cliente.\n");
     
     //search for the data in the hash table
     //saving log history
